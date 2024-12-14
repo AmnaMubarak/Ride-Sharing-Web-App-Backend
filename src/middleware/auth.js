@@ -1,30 +1,29 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const userRepository = require('../data/repositories/user.repository');
+const { AppError } = require('./error.middleware');
 
 exports.protect = async (req, res, next) => {
-  let token;
-
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
-    try {
-      // Get token from header
-      token = req.headers.authorization.split(' ')[1];
-
-      // Verify token
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-      // Get user from token
-      req.user = await User.findById(decoded.id).select('-password');
-
-      next();
-    } catch (error) {
-      res.status(401).json({ message: 'Not authorized' });
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader?.startsWith('Bearer')) {
+      throw new AppError(401, 'Not authorized, no token');
     }
-  }
 
-  if (!token) {
-    res.status(401).json({ message: 'Not authorized, no token' });
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    const user = await userRepository.findById(decoded.id);
+    if (!user) {
+      throw new AppError(401, 'User no longer exists');
+    }
+
+    req.user = user;
+    next();
+  } catch (error) {
+    if (error instanceof jwt.JsonWebTokenError) {
+      next(new AppError(401, 'Invalid token'));
+    } else {
+      next(error);
+    }
   }
 }; 

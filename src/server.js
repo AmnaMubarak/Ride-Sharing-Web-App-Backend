@@ -1,7 +1,9 @@
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./config/database');
 const authRoutes = require('./routes/auth.routes');
+const waitForDatabase = require('./utils/db-check');
+const logger = require('./utils/logger');
+const { errorHandler } = require('./middleware/error.middleware');
 
 require('dotenv').config();
 
@@ -11,19 +13,30 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Connect to Database
-connectDB();
+const startServer = async () => {
+  try {
+    await waitForDatabase();
 
-// Routes
-app.use('/api/auth', authRoutes);
+    // Routes
+    app.use('/api/auth', authRoutes);
 
-// Basic route
-app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to Ride Sharing API' });
-});
+    // Error handling middleware
+    app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
+    // Basic route
+    app.get('/', (req, res) => {
+      res.json({ message: 'Welcome to Ride Sharing API' });
+    });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-}); 
+    const PORT = process.env.PORT || 5000;
+
+    app.listen(PORT, () => {
+      logger.info(`Server is running on port ${PORT}`);
+    });
+  } catch (error) {
+    logger.error('Failed to start server:', error);
+    process.exit(1);
+  }
+};
+
+startServer(); 
