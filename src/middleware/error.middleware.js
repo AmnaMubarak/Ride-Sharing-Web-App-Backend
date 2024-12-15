@@ -1,5 +1,6 @@
 const { ZodError } = require('zod');
 const logger = require('../utils/logger');
+const uuid = require('uuid');
 
 class AppError extends Error {
   constructor(statusCode, message) {
@@ -26,8 +27,11 @@ class AuthenticationError extends AppError {
 }
 
 const errorHandler = (err, req, res, next) => {
-  // Log error details
+  // Add request ID for tracking
+  const requestId = req.id || uuid();
+  
   logger.error({
+    requestId,
     message: err.message,
     error: err,
     stack: err.stack,
@@ -35,6 +39,9 @@ const errorHandler = (err, req, res, next) => {
     method: req.method,
     ip: req.ip,
     userId: req.user?.id,
+    headers: req.headers,
+    query: req.query,
+    body: req.body,
   });
 
   err.statusCode = err.statusCode || 500;

@@ -1,2 +1,14 @@
 {"level":"info","message":"Database is ready!","timestamp":"2024-12-13 16:22:03"}
 {"level":"info","message":"Server is running on port 5000","timestamp":"2024-12-13 16:22:03"}
+{"level":"info","message":"Database is ready!","timestamp":"2024-12-14 08:20:32"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2024-12-14 08:20:32"}
+{"level":"warn","message":"Database not ready. 4 retries left...","timestamp":"2024-12-14 11:05:17"}
+{"level":"warn","message":"Database not ready. 3 retries left...","timestamp":"2024-12-14 11:05:22"}
+{"level":"warn","message":"Database not ready. 4 retries left...","timestamp":"2024-12-14 11:15:56"}
+{"level":"warn","message":"Database not ready. 3 retries left...","timestamp":"2024-12-14 11:16:01"}
+{"level":"warn","message":"Database not ready. 2 retries left...","timestamp":"2024-12-14 11:16:06"}
+{"level":"warn","message":"Database not ready. 1 retries left...","timestamp":"2024-12-14 11:16:11"}
+{"level":"warn","message":"Database not ready. 0 retries left...","timestamp":"2024-12-14 11:16:16"}
+{"level":"error","message":"Failed to connect to database","timestamp":"2024-12-14 11:16:21"}
+{"level":"info","message":"Database is ready!","timestamp":"2024-12-14 11:39:23"}
+{"level":"info","message":"Server is running on port 5000","timestamp":"2024-12-14 11:39:23"}

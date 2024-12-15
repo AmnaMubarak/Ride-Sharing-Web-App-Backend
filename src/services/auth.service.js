@@ -5,9 +5,30 @@ const { CreateUserDto } = require('../dtos/user.dto');
 
 class AuthService {
   generateToken(id) {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-      expiresIn: '30d',
-    });
+    return jwt.sign(
+      { 
+        id,
+        type: 'access',
+        iat: Math.floor(Date.now() / 1000)
+      }, 
+      process.env.JWT_SECRET, 
+      {
+        expiresIn: '1h',
+      }
+    );
+  }
+
+  generateRefreshToken(id) {
+    return jwt.sign(
+      { 
+        id,
+        type: 'refresh'
+      }, 
+      process.env.JWT_REFRESH_SECRET,
+      {
+        expiresIn: '7d'
+      }
+    );
   }
 
   async register(userData) {

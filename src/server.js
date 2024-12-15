@@ -4,14 +4,21 @@ const authRoutes = require('./routes/auth.routes');
 const waitForDatabase = require('./utils/db-check');
 const logger = require('./utils/logger');
 const { errorHandler } = require('./middleware/error.middleware');
+const helmet = require('helmet');
+const { apiLimiter } = require('./middleware/rateLimiter');
 
 require('dotenv').config();
 
 const app = express();
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+// Security middleware
+app.use(helmet());
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  credentials: true
+}));
+app.use('/api', apiLimiter);
+app.use(express.json({ limit: '10kb' })); // Limit payload size
 
 const startServer = async () => {
   try {

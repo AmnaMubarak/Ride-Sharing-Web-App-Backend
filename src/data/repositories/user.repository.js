@@ -1,6 +1,7 @@
 const BaseRepository = require('./base.repository');
 const { CreateUserDto, UserResponseDto } = require('../../dtos/user.dto');
 const bcrypt = require('bcryptjs');
+const ValidationError = require('../../middleware/error.middleware');
 
 class UserRepository extends BaseRepository {
   constructor() {
@@ -33,11 +34,25 @@ class UserRepository extends BaseRepository {
   }
 
   async hashPassword(password) {
-    return await bcrypt.hash(password, 12);
+    return await bcrypt.hash(password, 14);
   }
 
   async matchPassword(hashedPassword, enteredPassword) {
     return await bcrypt.compare(enteredPassword, hashedPassword);
+  }
+
+  validatePassword(password) {
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*]/.test(password);
+
+    if (password.length < minLength) throw new ValidationError('Password must be at least 8 characters');
+    if (!hasUpperCase) throw new ValidationError('Password must contain uppercase letters');
+    if (!hasLowerCase) throw new ValidationError('Password must contain lowercase letters');
+    if (!hasNumbers) throw new ValidationError('Password must contain numbers');
+    if (!hasSpecialChar) throw new ValidationError('Password must contain special characters');
   }
 }
 
