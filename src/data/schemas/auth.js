@@ -8,9 +8,12 @@ const registerSchema = z.object({
     .transform(email => email.toLowerCase()),
   password: z.string()
     .min(8)
+    .max(50),
+  firstName: z.string()
+    .min(2)
     .max(50)
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/),
-  name: z.string()
+    .regex(/^[a-zA-Z\s]*$/),
+  lastName: z.string()
     .min(2)
     .max(50)
     .regex(/^[a-zA-Z\s]*$/),

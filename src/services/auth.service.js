@@ -31,6 +31,17 @@ class AuthService {
     );
   }
 
+  isAuthenticated(token) {
+    if (!token) return false;
+    
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      return decoded.type === 'access' && decoded.id;
+    } catch (error) {
+      return false;
+    }
+  }
+
   async register(userData) {
     const userExists = await userRepository.findByEmail(userData.email);
     if (userExists) {
@@ -70,7 +81,8 @@ class AuthService {
     if (!user) {
       throw new AppError(404, 'User not found');
     }
-    return user;
+    const { password: _, ...userResponse } = user;
+    return userResponse;
   }
 }
 

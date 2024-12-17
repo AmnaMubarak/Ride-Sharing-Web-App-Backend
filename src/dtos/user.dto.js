@@ -2,7 +2,8 @@ class CreateUserDto {
   constructor(data) {
     this.email = data.email;
     this.password = data.password;
-    this.name = data.name;
+    this.firstName = data.firstName;
+    this.lastName = data.lastName;
     this.role = data.role;
   }
 
@@ -10,7 +11,8 @@ class CreateUserDto {
     return {
       email: this.email,
       password: this.password,
-      name: this.name,
+      firstName: this.firstName,
+      lastName: this.lastName,
       role: this.role,
     };
   }
@@ -20,7 +22,8 @@ class UserResponseDto {
   constructor(user) {
     this.id = user.id;
     this.email = user.email;
-    this.name = user.name;
+    this.firstName = user.firstName;
+    this.lastName = user.lastName;
     this.role = user.role;
     this.createdAt = user.createdAt;
   }
@@ -29,7 +32,8 @@ class UserResponseDto {
     return {
       id: this.id,
       email: this.email,
-      name: this.name,
+      firstName: this.firstName,
+      lastName: this.lastName,
       role: this.role,
       createdAt: this.createdAt,
     };
