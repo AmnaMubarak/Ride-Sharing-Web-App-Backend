@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment variables
+.env
+.env.*
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# IDE/Editor specific
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build outputs
+dist/
+build/
+
+# Docker
+docker-compose.override.yml
+
+# Database
+postgres_data/
+
+# Prisma
+.prisma/
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Debug
+.debug/
+
+# Testing
+coverage/
