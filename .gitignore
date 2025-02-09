@@ -39,3 +39,6 @@ Thumbs.db
 
 # Testing
 coverage/
+
+# node modules
+node_modules/
