@@ -6,6 +6,10 @@ const logger = require('./utils/logger');
 const { errorHandler } = require('./middleware/error.middleware');
 const helmet = require('helmet');
 const { apiLimiter } = require('./middleware/rateLimiter');
+const compression = require('compression');
+const config = require('./config/app');
+const prisma = require('./lib/prisma');
+const redis = require('./lib/redis');
 
 require('dotenv').config();
 
@@ -34,6 +38,7 @@ app.use(cors({
 
 // Other middleware
 app.use(helmet());
+app.use(compression());
 app.use('/api', apiLimiter);
 app.use(express.json({ limit: '10kb' }));
 
@@ -52,6 +57,8 @@ const startServer = async () => {
 
     // Routes
     app.use('/api/auth', authRoutes);
+    app.use('/api/rides', require('./routes/ride.routes'));
+    app.use('/api/users', require('./routes/user.routes'));
 
     // Error handling middleware
     app.use(errorHandler);
@@ -59,6 +66,27 @@ const startServer = async () => {
     // Basic route
     app.get('/', (req, res) => {
       res.json({ message: 'Welcome to Ride Sharing API' });
+    });
+
+    // Health check endpoint
+    app.get('/health', async (req, res) => {
+      try {
+        // Check database
+        await prisma.$queryRaw`SELECT 1`;
+        // Check Redis
+        await redis.ping();
+        
+        res.json({ 
+          status: 'healthy',
+          timestamp: new Date().toISOString(),
+          env: config.env
+        });
+      } catch (error) {
+        res.status(500).json({ 
+          status: 'unhealthy',
+          error: error.message
+        });
+      }
     });
 
     const PORT = process.env.PORT || 5000;
@@ -72,4 +100,22 @@ const startServer = async () => {
   }
 };
 
-startServer(); 
+// Graceful shutdown
+const shutdown = async () => {
+  try {
+    await prisma.$disconnect();
+    await redis.quit();
+    logger.info('Gracefully shutting down');
+    process.exit(0);
+  } catch (error) {
+    logger.error('Error during shutdown:', error);
+    process.exit(1);
+  }
+};
+
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);
+
+startServer();
+
+module.exports = app; 
