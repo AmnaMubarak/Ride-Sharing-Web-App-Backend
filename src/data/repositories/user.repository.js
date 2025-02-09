@@ -2,6 +2,7 @@ const BaseRepository = require('./base.repository');
 const { CreateUserDto, UserResponseDto } = require('../../dtos/user.dto');
 const bcrypt = require('bcryptjs');
 const ValidationError = require('../../middleware/error.middleware');
+const { clearUserCache } = require('../../utils/cache');
 
 class UserRepository extends BaseRepository {
   constructor() {
@@ -53,6 +54,18 @@ class UserRepository extends BaseRepository {
     if (!hasLowerCase) throw new ValidationError('Password must contain lowercase letters');
     if (!hasNumbers) throw new ValidationError('Password must contain numbers');
     if (!hasSpecialChar) throw new ValidationError('Password must contain special characters');
+  }
+
+  async update(id, data) {
+    const result = await super.update(id, data);
+    await clearUserCache(id);
+    return result;
+  }
+
+  async delete(id) {
+    const result = await super.delete(id);
+    await clearUserCache(id);
+    return result;
   }
 }
 
