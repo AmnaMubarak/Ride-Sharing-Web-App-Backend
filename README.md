@@ -60,7 +60,7 @@ A robust, scalable backend API for a ride-sharing application built with Node.js
 
 1. Clone the repository
    ```
-   git clone <repository-url>
+   git clone https://github.com/AmnaMubarak/Ride-Sharing-Web-App-Backend.git
    cd Ride-Sharing-Web-App-Backend
    ```
 
