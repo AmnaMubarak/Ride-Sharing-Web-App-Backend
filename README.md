@@ -145,7 +145,3 @@ JWT_EXPIRES_IN=30d
 # Logging
 LOG_LEVEL=info
 ```
-
-## License
-
-[MIT](LICENSE) 
